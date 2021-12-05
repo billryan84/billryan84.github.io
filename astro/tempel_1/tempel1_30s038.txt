@@ -1,0 +1,50 @@
+<div class="moz-text-flowed" style="font-family: -moz-fixed">SIMPLE  =                    T / Fits standard
+BITPIX  =                  -32 / Bits per pixel
+NAXIS   =                    2 / Number of axes
+NAXIS1  =                  381 / Axis length
+NAXIS2  =                  255 / Axis length
+EXTEND  =                    F / File may contain extensions
+ORIGIN  = 'NOAO-IRAF FITS Image Kernel December 2001' / FITS file originator
+DATE    = '2005-07-06T06:48:55'
+IRAF-TLM= '23:48:55 (05/07/2005)'
+MIRATYPE= '16 bit integer'     / MIRA pixel type
+OBSTYPE = 'normal  '           /
+EXPTIME = 30.                  / exposure time [seconds]
+DATE-OBS= '2005-07-04T06:06:48' / UT date of observation [y-m-dTh:m:s]
+TIME-OBS= '06:06:48'           / UT time of observation [h:m:s.s]
+GAIN    = 2.3                  / detector gain [electrons/count]
+RNOISE  = 15.                  / detector readout noise [electrons]
+COL_BIN =                    2 / CCD column binning
+ROW_BIN =                    2 / CCD row binning
+X-ORIGIN=                    0 / column origin on binned array
+Y-ORIGIN=                    0 / row origin on binned array
+RA      = '08:52:06.6'         / Right ascension [h:m:s.s]
+DEC     = '+11:52:39'          / Declination [d:m:s.s]
+AIRMASS = 1.                   / reference airmass
+OBSRVTRY= '        '           / observatory
+OBSERVER= 'Bill Ryan'          /
+INSTRUME= 'LX200-14GPS'        /
+DETECTOR= 'ST-7    '           /
+CCD-TEMP= -0.231815405223      / detector temperature
+CCDTEMP1= -0.231815405223      / detector temperature at start of exposure
+CCDTEMP2= -0.231815405223      / detector temperature at time of readout
+CCD-TREQ= 0.                   / requested detector temperature
+MIRA-VER= 'MIRA    '           / MIRA program version
+DATEFITS= '2005-07-04T06:07:24' / UT date saved to FITS
+TIMEFITS= '06:07:24'           / UT time saved to FITS
+
+END
+
+------------------------
+
+Title: tempel1_30s038.fits
+Width:  381 pixels
+Height:  255 pixels
+Bits per pixel: 32 (float)
+Display range: -71.6614 - 12324.8672
+No Threshold
+Uncalibrated
+Path: /home/cometrice/tempel_070405/scrap/tempel1_30s038.fits
+No Selection
+
+</div>
