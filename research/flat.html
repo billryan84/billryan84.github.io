@@ -1,0 +1,128 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="Author" CONTENT="Bill Ryan">
+   <TITLE>Preparing images for photometry using IRAF</TITLE>
+</HEAD>
+<BODY>
+
+<H3>
+Reduction Procedures using IRAF: Preparing images for photometry</H3>
+
+<H4>
+Note: Any page numbers refer to CCD reduction manual by Massey, et al</H4>
+Change directory to <TT>/flattest</TT> or whatever directory that you would
+like to work in.
+<H4>
+1) Use <TT>implot</TT> on flat image to confirm bias and trim values given
+in Step 2</H4>
+Type:
+<PRE>implot b0025.imh</PRE>
+Look at left and right edges (remember to use <TT>e</TT> to expand these
+regions; <TT>r</TT> to replot full image) to determine what columns to
+keep (first pair of trim parameters) and the overscan region (first pair
+of bias parameters) to measure the bias offset. Type <TT>c </TT>to plot
+a column to determine the second pair of trim and bias parameters (top
+and bottom of portion of image to keep). Type <TT>q</TT> to exit <TT>implot</TT>.
+<H4>
+2) Subtract columnbias and trim using <I>noao.imred.bias.colbias</I></H4>
+To load the package&nbsp; <I>noao.imred.bias.colbias,</I> type at the 'cl'
+prompt:
+<PRE>cl> noao</PRE>
+
+<PRE>cl> imred</PRE>
+
+<PRE>cl> bias</PRE>
+Create a file list with the names of&nbsp; all&nbsp; images.
+<PRE>files *.imh > imlist</PRE>
+The routine, <TT>colbias</TT>, should appear as one of the available packages
+loaded. Type:
+<PRE>epar colbias</PRE>
+and modify the following parameters
+<PRE>input = @imlist</PRE>
+
+<PRE>output = @imlist</PRE>
+
+<PRE>bias = [1030:1042,2:1020]</PRE>
+
+<PRE>trim = [10:1010,2:1020]</PRE>
+
+<PRE>function = chebyshev</PRE>
+Remember to type 'control-d' to save changes.
+
+<P>Run <TT>colbias</TT>.
+<BR>Continually hit <TT>return</TT> and <TT>q</TT> (in image window) to
+confirm.
+<BR>&nbsp;Note any images that look 'funny'.
+<H4>
+3) Create master bias frame with package<I> imred.ccdred.zerocombine</I></H4>
+Create a file list with the names of&nbsp; all of the bias frames.
+<PRE>files b* > biaslist</PRE>
+will write the names of all b-series files to the file 'biaslist'. Then
+use <TT>vi</TT> to delete names from list (i.e., filenames that are not
+bias images). Also, delete any image names that you determined were 'funny'
+in Step 2.&nbsp; In the <TT>vi </TT>editor, use arrow keys to navigate
+and <TT>dd</TT> to delete a line. Type <TT>:wq</TT> to 'write/quit', i.e.,
+to save file and quit. You can also use the pico editor by typing <TT>!pico
+filename</TT>.
+
+<P>Load&nbsp;<I> imred.ccdred </I>(as described above) and epar <TT>zerocombine</TT>.
+Enter '@' and then the name of this file (<TT>@biaslist</TT>) in the 'input'
+entry. Leave the rest of the zerocombine options at default (page 13) With
+the default, the output master biasframe will be 'Zero'. Then run <TT>zerocombine</TT>
+to create master bias frame.
+<H4>
+4) Subtract master bias frame (Zero) from all flat and data images</H4>
+Copy the imlist to filelist (<TT>!cp imlist filelist</TT>) and edit filelist
+to remove the names of all
+<BR>bias images and 'bad' images (again, see Step 2).
+
+<P>Use the <TT>imarith</TT> function (general image arithmetic function
+- in this case, subtracting each bias frame (Zero) pixel value from each
+image frame pixel value). epar <TT>imarith</TT> and set the following values:
+<PRE>operand1 = @filelist</PRE>
+
+<PRE>op = -</PRE>
+
+<PRE>operand2 = Zero</PRE>
+
+<PRE>result = @filelist</PRE>
+
+<DL>Run <TT>imarith</TT>. This will subtract the image, <TT>Zero</TT>,
+from every image named in <TT>filelist</TT>, writing over the original
+image (result is the same as operand1)</DL>
+
+<H4>
+5) Create master flat field.</H4>
+Create file list containing names of flat field images. Type
+<PRE>cp filelist vflatlist</PRE>
+and use vi or pico to delete non-flatfield images. epar <TT>flatcombine</TT>
+with mostly default settings from page 20 except:
+<PRE>input = vflatlist</PRE>
+
+<PRE>output = flatV</PRE>
+
+<PRE>process = no</PRE>
+It might be a good idea to view each flat first before including them in
+the list. Run <TT>flatcombine</TT> to create master V-flatfield 'flatV'.
+<H4>
+6) Normalize flat using <TT>imstat</TT> and <TT>imarith</TT>.</H4>
+At the<TT> cl></TT> prompt, type:
+<PRE>imstat flatV fields="image,mode"</PRE>
+to determine the mode of the pixel values (most frequently occuring value).
+I got 13288 for the flat field images that I used - yours may be different.
+Normalize the pixel values by typing:
+<PRE>imarith flatV / 13288 flatV</PRE>
+Take a look at final 'flatV' with <TT>disp</TT> and <TT>implot</TT> (pixel
+values should hover about 1)
+<H4>
+7) Perform flatfielding using <TT>imarith</TT>.</H4>
+Make list of object images (files tra* > objlist) or just use image name
+(if only one such as a0041.imh). Divide each image by the master flatfield
+(flatV):
+<PRE>imarith @objlist / flatV @objlist</PRE>
+Do the images look any cleaner than when you started? (i.e.,&nbsp; do you
+really believe that the process worked?). You might compare one of the
+finished products with the original image.
+</BODY>
+</HTML>

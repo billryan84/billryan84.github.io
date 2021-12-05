@@ -1,0 +1,195 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (WinNT; I) [Netscape]">
+   <meta name="Author" content="Bill Ryan">
+   <title>Aperture Photometry using IRAF</title>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+
+<h3>
+Aperture Photometry Exercise using IRAF</h3>
+1) On local machine, start an <i>xgterm</i> window and an <i>ds9</i> window.
+To do this, type
+<pre>xgterm &amp;</pre>
+
+<pre>ds9 &amp;</pre>
+Note: Implicitly assume that you type a&nbsp; <tt>&lt;return></tt> after
+each <tt>formatted </tt>line. Explicit <tt>&lt;return></tt>'s are only
+shown where they might not be obvoious.
+<p>2) If you are running IRAF locally, skip to Step 4 .
+<p>If you are working on a remote machine, log into '<tt>gaspra</tt>' in
+the <i>xgterm</i> window:
+<pre>telnet gaspra</pre>
+
+<pre>username</pre>
+
+<pre>password</pre>
+3) To start iraf in the <i>xgterm</i> window, type
+<pre>setenv IMTDEV inet:5137:localmachinename</pre>
+
+<pre>cl</pre>
+where <i>localmachinename</i> is the name (or IP number) of the workstation
+at which you are sitting (e.g., <i>physics1</i>).
+<p>Note: If the script 'iraf' is in your /bin directory, this can be accomplished
+by simply typing
+<pre>iraf&nbsp; machinename. (e.g., 'iraf physics1').</pre>
+You are now running the computational part of iraf on the the machine <i>gaspra</i>
+and will be displaying images and results on <i>localmachinename</i>.
+<p>4) In the <i>xgterm</i> window, type
+<pre>cd</pre>
+
+<pre>ls</pre>
+
+<pre>cd m67</pre>
+This series of commands took you to the directory 'astro', which is your
+IRAF home directory. The 'ls' command lists the files and directories.
+Then you changed to the directory 'm67' where the photometry exercise files
+are located. Now you would like to display an image.
+<p>5) Convert image from FITS (standard) to IRAF format. Type
+<pre>ls</pre>
+to see which images exist the current directory. Now type
+<pre>rfits</pre>
+and respond with
+<pre>m67v</pre>
+
+<pre>m67v</pre>
+You should now see (after typing 'ls') the file 'm67v.imh' - this is the
+m67v image in IRAF format. Now type
+<pre>disp</pre>
+and respond with
+<pre>m67v</pre>
+and a few <tt>&lt;return></tt>'s. You should see the image displayed in
+the <i>ds9</i> window.
+<p>Check this for ds9 modifications----------------------------------
+<br>Under the <i>Options</i> menu, click on <i>Control Panel</i>. To magnify
+the image, click on <i>Zoom In</i>. Position the mouse in the lower right
+corner of the ximtool window, click and hold the button down, and then
+resize the window until the complete image fits
+<br>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^.
+<p>6) We now would like to learn a bit about the image. Position the mouse
+in the <i>xgterm</i> window and click (i.e., make the window active). Then
+type
+<pre>imexamine</pre>
+A circular cursor should appear in the image window. Position this over
+a star (click the mouse to ensure that the window is active), and then
+type
+<pre>r</pre>
+on the keyboard. A radial plot of the star's intensity should appear in
+a new window. You may have to use the mouse to bring this image in front
+of the others on your screen. Experiment with <i>imexamine</i> a bit by
+positioning the circular cursor and trying out the following commands (only
+the letter is needed):
+<pre>s&nbsp; (surface plot)</pre>
+
+<pre>e&nbsp; (contour plot)</pre>
+
+<pre>c&nbsp; (plot a complete column of the image)</pre>
+
+<pre>l&nbsp; (plot a complete line of the image)</pre>
+7) Now we need to get ready to do some photometry. First we need to get
+an idea of the width of the stellar images. To do this, use the 'r' command
+in <i>imexamine</i>. At the base of the radial plot window, look at the
+number in the far right. This is the full width at half-maximum (FWHM)
+in pixels, i.e., the width of the stars image where the intensity is one
+half of the central value or greater. Does this number seem to agree with
+the radial plot? Remember, the x-axis is the radius, not the diameter.
+Measure the FWHM for a couple different stars and get a rough average.
+(Should be somewhere between 2.1 and 2.3). When you are done, type
+<pre>q</pre>
+to quit <i>imexamine</i>.
+<p>8) To load the IRAF photometry packages, type
+<pre>digiphot</pre>
+
+<pre>apphot</pre>
+at the <i>cl </i>prompt. We will use the task <i>qphot</i> to do the photometry.
+However, we will also learn a new IRAF trick at this point. We have been
+entering responses to commands interactively until now. However, all IRAF
+commands have a parameter file with default responses. To modify the <i>qphot
+</i>parameter
+file, type
+<pre>epar qphot</pre>
+in the <i>xgterm</i> window. Enter the following parameters by using the
+arrow key to position the cursor, entering the value, then hitting .
+<pre>image = m67v</pre>
+
+<pre>annulus = 8.0</pre>
+
+<pre>dannulus = 4.0</pre>
+
+<pre>aperture = 6.0</pre>
+
+<pre>output = m67v.mag</pre>
+
+<pre>zmag = 22.766</pre>
+The zmag entry is optional at this step. However, this value 'rigs' the
+zero-point of the results to be consistent with the v-magnitude of the
+reference star in the m67 image. When you are finished, type
+<pre>:wq</pre>
+to save the file. Start the photometry program by typing
+<pre>qphot</pre>
+and repeatedly hitting &lt;return> to select the default values. A round
+cursor should appear in the image window. Center this over the reference
+star and type
+<pre>i</pre>
+A window should appear querying you for the redius of extraction box.
+<br>Enter
+<pre>20</pre>
+and hit
+<pre>&lt;return></pre>
+A radial plot of the reference star should appear. Note that it is contaminated
+by a neighboring star at about 11.5 pixels. We will now confirm that the
+aperture and annulus values entered previously are appropriate. Type
+<pre>v</pre>
+Successively hit
+<pre>&lt;return></pre>
+viewing the position of the inner and outer sky radii and the photometry
+aperture. The vertical line will position itself at the default values
+each time. When you reach the <i>Mark apertures step</i>, type
+<pre>q</pre>
+
+<pre>q</pre>
+and the round cursor should reappear in the image window. Click to make
+the window active and then type
+<pre>w</pre>
+to save the parameters just confirmed. Now place the round cursor over
+each star (measure the reference star last, i.e., make it star #11) and
+press the
+<pre>spacebar</pre>
+to measure each the magnitude. You should notice the results in the <i>xgterm</i>
+window. When you are finished, type
+<pre>q</pre>
+in the <i>xgterm</i> window, then move the cursor to the image window,
+click the mouse (to make window active) and type (this is quirky - the
+order of typing the q's is crucial)
+<pre>q</pre>
+You should now have a file 'm67v.mag' containing your results. Type
+<pre>ls</pre>
+to confirm this. To view this file, type
+<pre>page m67v.mag</pre>
+Hit the spacebar to view the next page and hit 'q' when you are finished.
+This file has more info than you care about at the moment. Therefore, we
+will use the <i>txdump</i> utility to extract the info that we want. Type
+<pre>epar txdump</pre>
+
+<pre>and enter</pre>
+
+<pre>textfile = m67v.mag</pre>
+
+<pre>fields = id,mag,merr</pre>
+
+<pre>:wq</pre>
+Type
+<pre>txdump</pre>
+to see the star id, magnitude, and the error in the mag displayed to the
+screen. To save these results to a file, type
+<pre>txdump > results.dat</pre>
+or any other filename after the '>'. Compare your results with those shown
+in the CCD lab handout. When you are finished, type
+<pre>lo</pre>
+to exit IRAF and then
+<pre>lo</pre>
+again to logout of <i>gaspra</i>.
+</body>
+</html>

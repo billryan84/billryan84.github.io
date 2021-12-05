@@ -1,0 +1,146 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (X11; I; Linux 2.2.14-5.0 i686) [Netscape]">
+   <TITLE>Calibration to Standard System using IRAF</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EF" VLINK="#55188A" ALINK="#FF0000">
+
+<H3>
+Photometric Calibration using IRAF</H3>
+
+<H4>
+Start with cleaned images of standard fields and program objects:</H4>
+
+<H4>
+1) Load noao.digiphot.apphot and noao.digiphot.photcal</H4>
+
+<H4>
+2) Measure standards using qphot - save in mag files * ensure filter and
+airmass id keywords are identified</H4>
+
+<H4>
+3) Identify pertinent images using MKIMSETS</H4>
+lpar mkimsets:
+<PRE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; imlist = "*mag.1"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The input image list
+&nbsp;&nbsp;&nbsp; idfilters = "V,B"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The list of filter ids
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; imsets = "stds.img"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The output image set file
+&nbsp;(imobsparams = "")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The output image observing parameters file
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (input = "photfiles")&nbsp;&nbsp;&nbsp; The source of the input image list
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (filter = )&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The filter keyword
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (fields = "")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Additional image list fields
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (sort = "")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The image list field to be sorted on
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (edit = yes)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Edit the input image list before grouping
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (rename = yes)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Prompt the user for image set names
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (review = yes)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Review the image set file with the editor
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (list = "")
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (mode = "ql")</PRE>
+
+Note: Filter id's should match id's in image headers at this point. This may or may
+not be the same as filter id's in transformation configuration file. See Step 4.
+
+<H4>
+4) Create standard star observations file using MKNOBSFILE. This also creates
+a format description file for the observations.</H4>
+lpar mknobsfile:
+<PRE>&nbsp;&nbsp;&nbsp; photfiles = "*mag.1"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The input list of APPHOT/DAOPHOT databases
+&nbsp;&nbsp;&nbsp; idfilters = "V,B"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The list of filter ids
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; imsets = "stds.img"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The input image set file
+&nbsp;observations = "stds.obs"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The output observations file
+&nbsp;&nbsp; (obsparams = "")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The input observing parameters file
+&nbsp; (obscolumns = "2 3 4 5")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The format of obsparams
+&nbsp;&nbsp; (minmagerr = 0.001)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The minimum error magnitude
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (shifts = "")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The input x and y coordinate shifts file
+&nbsp;&nbsp;&nbsp; (apercors = "")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The input aperture corrections file
+&nbsp;&nbsp;&nbsp; (aperture = 1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The aperture number of the extracted magnitude
+&nbsp;&nbsp; (tolerance = 20.)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The tolerance in pixels for position matching
+&nbsp; (allfilters = no)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Output only objects matched in all filters
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (verify = no)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Verify interactive user input ?
+&nbsp;&nbsp;&nbsp;&nbsp; (verbose = yes)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Print status, warning and error messages ?
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (mode = "ql")</PRE>
+Note:&nbsp;Set tolerance to a large enough value for objects to be matched
+from frame to frame or set it to zero to turn off object matching.
+
+<P>Edit observations file to ensure star and filter id's match those in standards
+catalog and that data exists for each filter for every star. Also, ensure
+that filter id's in observations format file are correct.
+
+<P>You may find the Perl script, fixobsfile, in the <A HREF="utilities">/utilities</A>
+directory useful to minimize editing.
+<H4>
+5) Create configuration file using MKCONFIG. You may use standard star
+catalogs and the associates format description and transformation files
+that come with IRAF (in the directory photcal$catalogs). However, you might
+need to copy the transformation file to the current directory and edit
+as needed.</H4>
+lpar mkconfig:
+<PRE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; config = "stdsconf"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The new configuration file
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catalog = "photcal$catalogs/fnlandolt.dat" The source of the catalog format sp
+&nbsp;observations = "fstds.obs.dat" The source of the observations file format specifica
+&nbsp;&nbsp;&nbsp; transform = "tnlandolt.dat" The source of the transformation equations
+&nbsp;&nbsp;&nbsp; (template = "")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; An existing template configuration file
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (catdir = )_.catdir)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The standard star catalog directory
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (verify = no)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Verify each new entry
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (edit = yes)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Edit the new configuration file
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (check = yes)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Check the configuration file
+&nbsp;&nbsp;&nbsp;&nbsp; (verbose = no)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Verbose output
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (mode = "ql")</PRE>
+
+<H4>
+6) Fit transformation coefficients using FITPARAMS</H4>
+lpar fitparams:
+<PRE>&nbsp;observations = "stds.obs"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; List of observations files
+&nbsp;&nbsp;&nbsp;&nbsp; catalogs = "photcal$catalogs/nlandolt.dat" List of standard catalog files
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; config = "stdsconf"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Configuration file
+&nbsp;&nbsp; parameters = "stds.out"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Output parameters file
+&nbsp;&nbsp; (weighting = "uniform")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Weighting type (uniform,photometric,equations)
+&nbsp; (addscatter = yes)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add a scatter term to the weights ?
+&nbsp;&nbsp; (tolerance = 3.0000000000000E-5) Fit convergence tolerance
+&nbsp;&nbsp;&nbsp;&nbsp; (maxiter = 15)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Maximum number of fit iterations
+&nbsp;&nbsp;&nbsp;&nbsp; (nreject = 0)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Number of rejection iterations
+&nbsp; (low_reject = 3.)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Low sigma rejection factor
+&nbsp;(high_reject = 3.)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; High sigma rejection factor
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (grow = 0.)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rejection growing radius
+&nbsp;(interactive = yes)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Solve fit interactively ?
+&nbsp;&nbsp;&nbsp;&nbsp; (logfile = "STDOUT")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Output log file
+(log_unmatche = yes)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Log any unmatched stars ?
+&nbsp;&nbsp;&nbsp;&nbsp; (log_fit = no)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Log the fit parameters and statistics ?
+&nbsp;(log_results = no)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Log the results ?
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (catdir = ).catdir)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The standard star catalog directory
+&nbsp;&nbsp;&nbsp; (graphics = "stdgraph")&nbsp;&nbsp;&nbsp;&nbsp; Output graphics device
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (cursor = "")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Graphics cursor input
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (mode = "ql")</PRE>
+
+Use the "c" key to identify points with high residuals. If your judgement justifies eliminating this 
+point, use the "d" key to do so, the hit the "f" key to make a new fit with this point eliminated from the 
+standard star data set.
+
+<H4>
+7) Apply transformation coefficients to standard stars using INVERTFIT&nbsp;
+to check for consistency</H4>
+lpar invertfit:
+<PRE>&nbsp;observations = "stds.obs"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; List of observations files
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; config = "stdsconf"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Configuration file
+&nbsp;&nbsp; parameters = "stds.out"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Fitted parameters file
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; calib = "stds.dat"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Output calibrated standard indices file
+&nbsp;&nbsp;&nbsp; (catalogs = "")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; List of standard catalog files
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (errors = "obserrors")&nbsp;&nbsp;&nbsp; Error computation type (undefined,obserrors,equation
+&nbsp;&nbsp;&nbsp;&nbsp; (objects = "all")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Objects to be fit (all,program,standards)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (print = "")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Optional list of variables to print
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (format = "")&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Optional output format string
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (append = no)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Append output to an existing file ?
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (catdir = )_.catdir)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The standard star catalog directory
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (mode = "ql")</PRE>
+
+This example 'determines' the magnitudes of the standard stars according
+to the fit stored in 'stds.out'. This is useful for examining the reliability
+of the fit. When you are happy with the fit, you can use this same procedure
+to determine the magnitudes of your program objects (stored in a similar
+obsfile - for example, obj.obs, etc).
+
+<H4>
+8) Create observation files for program stars and apply transformation
+coefficients using INVERTFIT</H4>
+
+</BODY>
+</HTML>

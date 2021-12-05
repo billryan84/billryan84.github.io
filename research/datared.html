@@ -1,0 +1,158 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (X11; I; Linux 2.0.35 i686) [Netscape]">
+   <TITLE>NMHU Asteroid Astronomy Research</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
+&nbsp;
+<CENTER><TABLE BORDER=4 BGCOLOR="#F2F2F2" >
+<TR>
+<TD ALIGN=CENTER VALIGN=CENTER><IMG SRC="tngaspra.jpg" HEIGHT=100 WIDTH=124></TD>
+
+<TD>
+<CENTER><B><FONT COLOR="#000000"><FONT SIZE=+3>Observational Asteroid Studies&nbsp;</FONT></FONT></B>&nbsp;</CENTER>
+</TD>
+</TR>
+</TABLE></CENTER>
+
+<HR>
+<H1>
+<FONT SIZE=+3>&nbsp;</FONT><FONT SIZE=+4>Analysis</FONT></H1>
+
+<UL>
+<LI>
+<FONT SIZE=+2>plot differential magnitude versus time for each night (remember,
+lower magnitude is brighter); examine plots to estimate period</FONT></LI>
+
+<LI>
+<FONT SIZE=+2>check comparison stars for variation</FONT></LI>
+
+<LI>
+<FONT SIZE=+2>perform Fourier analysis and examine power spectrum to determine
+potential rotation periods</FONT></LI>
+
+<LI>
+<FONT SIZE=+2>phase back data to see if period 'works'</FONT></LI>
+
+<UL>
+<H5>
+<B><FONT SIZE=+2>The following set of instructions maybe used to perform
+analysis step.</FONT></B></H5>
+
+<LI>
+<FONT SIZE=+1>From the mag files created by qphot; text dump all the mag
+files for a night into one results file.</FONT></LI>
+</UL>
+&nbsp;
+<UL>
+<LI>
+<FONT SIZE=+1>The asteriod must be the first object the asteriod is ID
+number 1. The compstrars are ID number 2 and geater.&nbsp;</FONT></LI>
+
+<BR>&nbsp;
+<LI>
+<FONT SIZE=+1>The results file is used to use by <A HREF="anliz.html">program
+anliz.</A></FONT></LI>
+
+<BR>&nbsp;
+<LI>
+<FONT SIZE=+1>Program anliz does the following</FONT></LI>
+
+<ADDRESS>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+- Data file to plot the differential magnitude versus time for all nights.</ADDRESS>
+
+<ADDRESS>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Use this plot to estimate period.</ADDRESS>
+
+<ADDRESS>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+- A check can be done for variation in comparison stars</ADDRESS>
+
+<ADDRESS>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+- Light time and magnitude corrections can be made</ADDRESS>
+
+<ADDRESS>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+- The option is given to the user to leave out selected stars</ADDRESS>
+
+<ADDRESS>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+- The output file can be in harris format or standard</ADDRESS>
+
+<ADDRESS>
+&nbsp;</ADDRESS>
+
+<BR>&nbsp;
+<LI>
+<FONT SIZE=+1>The following iraf txdump settings should be used to use
+program anliz.</FONT></LI>
+
+<ADDRESS>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+-text files ="*.mag.1"</ADDRESS>
+
+<ADDRESS>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+-fields ="image,id,otime,mag,merr,itime,xairmass"</ADDRESS>
+
+<ADDRESS>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+-expr ="yes"</ADDRESS>
+
+<ADDRESS>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+-(headers =no)</ADDRESS>
+
+<ADDRESS>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+-(parameters =yes)</ADDRESS>
+
+<ADDRESS>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+-(mode ="ql")</ADDRESS>
+
+<BR>&nbsp;
+<LI>
+<FONT SIZE=+1>The Harris program can be used if the output is in Harris
+format.</FONT></LI>
+
+<BR><FONT SIZE=+1>&nbsp;</FONT>
+<LI>
+<FONT SIZE=+1>The Harris program can determine potential rotational period
+.</FONT></LI>
+
+<BR>&nbsp;
+<LI>
+<FONT SIZE=+1>This program performs Fourier analysis.</FONT></LI>
+
+<BR><FONT SIZE=+1>&nbsp;</FONT>
+<LI>
+<FONT SIZE=+1>It also phases back data</FONT></LI>
+
+<BR>&nbsp;
+<LI>
+<FONT SIZE=+1>The files that are created by the Harris program create a
+fitted curve and curves for each night of data.</FONT></LI>
+
+<BR><FONT SIZE=+1>&nbsp;</FONT>
+<LI>
+<FONT SIZE=+1>Using gnuplot the curves can be plotted to see how the fit
+curve and each nightly curve compare and check to see if the period 'works'.</FONT></LI>
+</UL>
+</UL>
+&nbsp;
+<UL>
+<LI>
+<FONT SIZE=+2>At this point you should have determined the spin rate and
+the amplitude for the asteroid.</FONT></LI>
+</UL>
+&nbsp;
+
+<P>| Return to <A HREF="http://physics.nmhu.edu/bryan/research/index.html">Asteroid
+Page</A> |
+</BODY>
+</HTML>
